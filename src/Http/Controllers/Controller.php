@@ -2,6 +2,7 @@
 
 namespace TCG\Voyager\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -48,8 +49,8 @@ abstract class Controller extends BaseController
          * Prepare Translations and Transform data
          */
         $translations = is_bread_translatable($data)
-                        ? $data->prepareTranslations($request)
-                        : [];
+            ? $data->prepareTranslations($request)
+            : [];
 
         foreach ($rows as $row) {
             $options = json_decode($row->details);
@@ -108,7 +109,20 @@ abstract class Controller extends BaseController
                 // Only if select_multiple is working with a relationship
                 $multi_select[] = ['model' => $options->model, 'content' => $content, 'table' => $options->pivot_table];
             } else {
-                $data->{$row->field} = $content;
+                $set_field_content = true;
+//                try {
+                    if (is_callable($data->{$row->field}) && is_subclass_of(call_user_func($data->{$row->field}), Relation::class)) {
+//                    is_subclass_of($a->options(), Relation::class)
+                        $relation = call_user_func($data->{$row->field});
+                        $relation->sync($content);
+                        $set_field_content = false;
+                    }
+//                } catch (\Exception $exception) {
+//
+//                }
+                if ($set_field_content) {
+                    $data->{$row->field} = $content;
+                }
             }
         }
 
