@@ -74,7 +74,7 @@
                                     @foreach(json_decode($dataTypeContent->{$row->field}) as $item)
                                         @if(isset($item->{$row->field . '_page_slug'}))
                                             <a href="{{ $item->{$row->field . '_page_slug'} }}">{{ $item->{$row->field}  }}</a>@if(!$loop->last), @endif
-                                        @else
+                                        @elseif(isset($item->{$row->field}))
                                             {{ $item->{$row->field}  }}
                                         @endif
                                     @endforeach
