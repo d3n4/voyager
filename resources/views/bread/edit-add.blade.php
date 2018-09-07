@@ -130,6 +130,20 @@
         var $image;
 
         $('document').ready(function () {
+
+            @foreach($dataTypeRows as $row)
+            @php $options = json_decode($row->details); @endphp
+            @if ($options && (isset($options->ace_theme) || isset($options->ace_mode)))
+            var ace_{{ $row->field }} = ace.edit("{{ $row->field }}");
+            @if (isset($options->ace_theme))
+            ace_{{ $row->field }}.setTheme("ace/theme/{{$options->ace_theme}}");
+            @endif
+            @if (isset($options->ace_theme))
+            ace_{{ $row->field }}.getSession().setMode("ace/mode/{{$options->ace_mode}}");
+            @endif
+            @endif
+            @endforeach
+
             $('.toggleswitch').bootstrapToggle();
 
             //Init datepicker for date fields if data-datepicker attribute defined
