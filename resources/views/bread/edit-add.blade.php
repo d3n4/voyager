@@ -138,7 +138,7 @@
             @if (isset($options->ace_theme))
             ace_{{ $row->field }}.setTheme("ace/theme/{{$options->ace_theme}}");
             @endif
-            @if (isset($options->ace_theme))
+            @if (isset($options->ace_mode))
             ace_{{ $row->field }}.getSession().setMode("ace/mode/{{$options->ace_mode}}");
             @endif
             @endif
